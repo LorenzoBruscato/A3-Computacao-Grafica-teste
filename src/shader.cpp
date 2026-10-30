@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <glm/gtc/type_ptr.hpp>
 
 // Cria o programa de shader a partir dos dois textos (vertex e fragment).
 // Devolve true se deu tudo certo e false se algo falhou.
@@ -111,4 +112,14 @@ void Shader::setVec2(const char* nome, float x, float y) const
 void Shader::setVec4(const char* nome, float x, float y, float z, float w) const
 {
     glUniform4f(glGetUniformLocation(programa, nome), x, y, z, w);
+}
+
+void Shader::setMat4(const char *nome, const glm::mat4 &matriz) const
+{
+    glUniformMatrix4fv(
+        glGetUniformLocation(programa, nome),
+        1,
+        GL_FALSE,
+        glm::value_ptr(matriz)
+    );
 }
