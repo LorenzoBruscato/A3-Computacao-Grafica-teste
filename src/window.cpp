@@ -50,7 +50,14 @@ void Window::aoClicarMouse(GLFWwindow *janela, int botao, int acao, int /*mods*/
         return;
 
     if (acao == GLFW_PRESS)
+    {
+        self->mouseButtons[botao] = true;
         self->cliquesNoQuadro[botao] = true;
+    }
+    else if (acao == GLFW_RELEASE)
+    {
+        self->mouseButtons[botao] = false;
+    }
 }
 
 bool Window::criar(const char *titulo, bool telaCheia, int larguraJanela, int alturaJanela)
@@ -68,6 +75,7 @@ bool Window::criar(const char *titulo, bool telaCheia, int larguraJanela, int al
     // OpenGL 3.3 no perfil Core.
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_SAMPLES, 4); // suaviza as bordas (MSAA 4x)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Em tela cheia, passa o monitor e usa a resolução dele.
@@ -99,8 +107,7 @@ bool Window::criar(const char *titulo, bool telaCheia, int larguraJanela, int al
         return false;
     }
 
-    largura = larguraJanela;
-    altura = alturaJanela;
+    glfwGetFramebufferSize(janela, &largura, &altura);
 
     // Guarda "this" na janela pra o callback conseguir atualizar largura/altura.
     glfwSetWindowUserPointer(janela, this);
@@ -139,4 +146,22 @@ void Window::limpar()
         glfwTerminate();
         glfwIniciado = false;
     }
+}
+
+void Window::setCursorMode(CursorMode mode)
+{
+    int value = GLFW_CURSOR_NORMAL;
+    if (mode == CursorMode::Hidden)
+        value = GLFW_CURSOR_HIDDEN;
+    else if (mode == CursorMode::Disabled)
+        value = GLFW_CURSOR_DISABLED;
+
+    glfwSetInputMode(janela, GLFW_CURSOR, value);
+}
+
+void Window::setMousePosition(double x, double y)
+{
+    glfwSetCursorPos(janela, x, y);
+    mouseX = x; // já guarda o valor novo, sem esperar o GLFW avisar
+    mouseY = y;
 }

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <glm/glm.hpp>
 #include <string>
+#include <glm/glm.hpp>
 
 class Shader
 {
@@ -10,6 +10,8 @@ private:
     GLuint programa = 0;
 
 public:
+    GLuint ID = 0;
+
     Shader() = default;
     ~Shader() { limpar(); }
 
@@ -21,6 +23,9 @@ public:
     void usar() const;
     void limpar();
     void setVec2(const char *nome, float x, float y) const;
+    void setVec3(const char *nome, float x, float y, float z) const;
     void setVec4(const char *nome, float x, float y, float z, float w) const;
     void setMat4(const char *nome, const glm::mat4 &matriz) const;
+    void setInt(const char *nome, int valor) const;
+    void Default();
 };
